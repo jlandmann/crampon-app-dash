@@ -260,10 +260,9 @@ def display_selected_data(selectedData, chart_dropdown, pctl_minmax):
         )
 
     pts = selectedData["points"]
-    fips = [str(pt["location"]) for pt in pts]
-    int_fips = [int(f) for f in fips]
+    fips = [pt["location"] for pt in pts]
 
-    dff = status_gdf[status_gdf.index.isin(int_fips)]
+    dff = status_gdf[status_gdf.index.isin(fips)]
 
     # select also by the boundaries from the RangeSlider
     dff = dff[
