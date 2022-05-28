@@ -276,7 +276,6 @@ def display_selected_data(selectedData, chart_dropdown, pctl_minmax):
         fig_layout = fig["layout"]
         fig_data = fig["data"]
 
-        fig_data[0]["text"] = dff.values.tolist()
         fig_layout["yaxis"]["title"] = "Selected glaciers"
         fig_layout["xaxis"]["title"] = "Percentile of current ensemble median at climatological distribution"
         fig_data[0]["marker"]["color"] = "#2cfec1"
