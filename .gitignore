@@ -140,3 +140,6 @@ cython_debug/
 
 # Pycharm stuff
 .idea
+
+# file caching for faster app input
+/cache-directory/

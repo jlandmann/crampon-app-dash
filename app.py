@@ -2,11 +2,13 @@ import pathlib
 import warnings
 
 import dash
+import geopandas
 import geopandas as gpd
 import plotly.express as px
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+from flask_caching import Cache
 import cufflinks as cf  # needed for .iplot() method
 
 warnings.filterwarnings('ignore')
@@ -22,13 +24,34 @@ app = dash.Dash(
 app.title = "CRAMPON App"
 server = app.server
 
+cache = Cache(server, config={
+    'CACHE_TYPE': 'FileSystemCache',
+    'CACHE_DIR': 'cache-directory'
+})
+
 # Load data
 APP_PATH = str(pathlib.Path(__file__).parent.resolve())
 
-status_gdf = gpd.read_file(
-    'https://crampon.glamos.ch/static/CH/glacier_status.geojson'
-    )
-status_gdf = status_gdf.sort_values('Area', ascending=False)
+
+@cache.memoize(timeout=600)
+def load_glacier_status() -> geopandas.GeoDataFrame:
+    """
+    Function loading and caching data from CRAMPON web page.
+
+    Returns
+    -------
+    gdf: geopandas.GeoDataFrame
+        GeoDataFrame with glacier status in Switzerland.
+    """
+    gdf = gpd.read_file(
+        'https://crampon.glamos.ch/static/CH/glacier_status.geojson'
+        )
+    gdf = gdf.sort_values('Area', ascending=False)
+
+    return gdf
+
+
+status_gdf = load_glacier_status()
 
 # some mapbox design
 mapbox_kwargs = dict(range_color=[0, 100],
@@ -309,12 +332,3 @@ def display_selected_data(selectedData, chart_dropdown, pctl_minmax):
 
 if __name__ == "__main__":
     app.run_server(debug=True)
-
-    # todo: caching
-    # todo: loading spinners
-    # todo: implement CRAMPON figure triggering on many glaciers /// popup when glacier is clicked
-    # todo: fix plot headings and x/y labels
-    # todo: take care of crash when no glaciers are selected
-    # todo: plot with area of selected glaciers
-    # todo: plot with number of selected glaciers
-    # todo: plot with median height, min/max height, slope, aspect, SLR equivalent (?) etc.
