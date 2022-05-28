@@ -332,11 +332,3 @@ def display_selected_data(selectedData, chart_dropdown, pctl_minmax):
 
 if __name__ == "__main__":
     app.run_server(debug=True)
-
-    # todo: loading spinners
-    # todo: implement CRAMPON figure triggering on many glaciers /// popup when glacier is clicked
-    # todo: fix plot headings and x/y labels
-    # todo: take care of crash when no glaciers are selected
-    # todo: plot with area of selected glaciers
-    # todo: plot with number of selected glaciers
-    # todo: plot with median height, min/max height, slope, aspect, SLR equivalent (?) etc.
