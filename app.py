@@ -165,6 +165,11 @@ app.layout = html.Div(
                         html.Div(
                             id="heatmap-container",
                             children=[
+                               dcc.Loading(
+                                    id='loading',
+                                    type='default',
+                                    className='loading_wrapper',
+                                    children=html.Div(id='loading-output')),
                                 html.P(
                                    "Current glacier status in Switzerland",
                                    id="heatmap-title",
@@ -217,6 +222,7 @@ app.layout = html.Div(
 
 @app.callback(
     Output("glacier-choropleth", "figure"),
+    Output("loading-output", "children"),
     [Input("pctl-slider", "value")],
     [State("glacier-choropleth", "figure")],
 )
@@ -235,7 +241,7 @@ def display_choropleth(value, glac_figure):
     glac_figure.update_geos(fitbounds="locations", visible=True)
     glac_figure.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     glac_figure.update_traces(marker_line_width=0)
-    return glac_figure
+    return glac_figure, None  # None is necessary because of loading spinner
 
 
 @app.callback(
